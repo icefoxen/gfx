@@ -373,7 +373,6 @@ pub enum WrapMode {
     /// Tile the texture, that is, sample the coordinate modulo `1.0`, so 
     /// addressing the texture beyond an edge will "wrap" back from the
     /// other edge.
-    /// This is the default.
     Tile,
     /// Mirror the texture. Like tile, but uses abs(coord) before the modulo.
     Mirror,
