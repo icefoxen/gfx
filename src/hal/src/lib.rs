@@ -287,7 +287,7 @@ pub enum Primitive {
     PatchList(PatchSize),
 }
 
-/// The type of each index value in the slice's index buffer
+/// An enum describing the type of an index value in a slice's index buffer
 #[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
