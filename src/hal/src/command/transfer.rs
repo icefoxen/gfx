@@ -37,7 +37,19 @@ pub struct BufferCopy {
     pub size: u64,
 }
 
-/// Bundles together all the data need to copy data from one `Image`
+/// DOC TODO
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct ImageResolve {
+    /// DOC TODO
+    pub src_subresource: image::Subresource,
+    /// DOC TODO
+    pub dst_subresource: image::Subresource,
+    /// DOC TODO
+    pub num_layers: image::Layer,
+}
+
+/// Bundles together all the data needed to copy data from one `Image`
 /// to another.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
