@@ -52,12 +52,8 @@ impl Default for ColorMask {
     }
 }
 
-<<<<<<< HEAD
 // DOC TODO
 #[allow(missing_docs)]
-=======
-/// DOC TODO
->>>>>>> Tried to explain the relationship between adapter and device properly.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Factor {
@@ -83,10 +79,8 @@ pub enum Factor {
 }
 
 /// Blending operation.
-<<<<<<< HEAD
-=======
 /// DOC TODO
->>>>>>> Tried to explain the relationship between adapter and device properly.
+#[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum BlendOp {
@@ -128,18 +122,16 @@ impl BlendOp {
     };
 }
 
-<<<<<<< HEAD
 /// Specifies whether to use blending, and if so,
 /// which operatiosn to use for color and alpha channels.
-=======
-/// DOC TODO
->>>>>>> Tried to explain the relationship between adapter and device properly.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum BlendState {
     /// Enabled blending
     On {
+        /// The blend operation to use for the color channels.
         color: BlendOp,
+        /// The blend operation to use for the alpha channel.
         alpha: BlendOp,
     },
     /// Disabled blending
@@ -232,10 +224,7 @@ impl DepthTest {
 }
 
 /// Stencil mask operation.
-<<<<<<< HEAD
-=======
 /// DOC TODO
->>>>>>> Tried to explain the relationship between adapter and device properly.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum StencilOp {
@@ -277,10 +266,7 @@ pub struct StencilFace {
 }
 
 /// DOC TODO
-<<<<<<< HEAD
 #[allow(missing_docs)]
-=======
->>>>>>> Tried to explain the relationship between adapter and device properly.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum StencilTest {
