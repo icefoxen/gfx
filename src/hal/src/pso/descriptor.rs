@@ -111,7 +111,7 @@ pub struct DescriptorSetWrite<'a, 'b, B: Backend, R: RangeArg<u64>> {
     pub write: DescriptorWrite<'a, B, R>,
 }
 
-#[allow(missing_docs)] //TODO
+#[allow(missing_docs)] //DOC ODO
 #[derive(Clone, Copy)]
 pub enum DescriptorWrite<'a, B: Backend, R: 'a + RangeArg<u64>> {
     Sampler(&'a [&'a B::Sampler]),

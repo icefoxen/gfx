@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*! Command queues.
 
     Queues are the execution paths of the graphical processing units. These process
@@ -7,6 +8,15 @@
     `CommandQueue<B, C>` has the capability defined by `C` for backend `B`: graphics, 
     compute and transfer.
 !*/
+=======
+//! Command queues.
+//!
+//! Queues are the execution paths of the graphical processing units. These process
+//! submitted commands buffers.
+//!
+//! There are different types of queues, which can only handle associated command buffers.
+//! `CommandQueue<B, C>` has the capability defined by `C`: graphics, compute and transfer.
+>>>>>>> Tried to explain the relationship between adapter and device properly.
 
 pub mod capability;
 pub mod family;
@@ -28,6 +38,7 @@ pub use self::family::{
 pub use self::submission::{RawSubmission, Submission};
 
 
+<<<<<<< HEAD
 /// An enum describing the queue type at runtime.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -39,6 +50,19 @@ pub enum QueueType {
     /// The queue supports compute operations.
     Compute,
     /// The queue supports transfer operations.
+=======
+/// The type of the queue, an enum encompassing `queue::Capability`
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub enum QueueType {
+    /// Supports all operations.
+    General,
+    /// Only supports graphics and transfer operations.
+    Graphics,
+    /// Only supports compute and transfer operations.
+    Compute,
+    /// Only supports transfer operations.
+>>>>>>> Tried to explain the relationship between adapter and device properly.
     Transfer,
 }
 
@@ -82,7 +106,11 @@ impl<B: Backend, C> CommandQueue<B, C> {
         &mut self.0
     }
 
+<<<<<<< HEAD
     /// Calls `submit_raw()` for the underlying `RawCommandQueue`.
+=======
+    /// DOC TODO
+>>>>>>> Tried to explain the relationship between adapter and device properly.
     pub fn submit<D>(&mut self,
         submission: Submission<B, D>,
         fence: Option<&B::Fence>,
