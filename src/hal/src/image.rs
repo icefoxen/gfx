@@ -222,7 +222,7 @@ pub enum FilterMethod {
 }
 
 /// The face of a cube texture to do an operation on.
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[repr(u8)]
