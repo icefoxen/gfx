@@ -13,7 +13,7 @@ use super::{
 };
 
 
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rect {
@@ -23,7 +23,7 @@ pub struct Rect {
     pub h: u16,
 }
 
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Viewport {

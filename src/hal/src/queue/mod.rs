@@ -1,11 +1,10 @@
-/*! Command queues.
-
-    Queues are the execution paths of the graphical processing units. These process
-    submitted commands buffers.
-
-    There are different types of queues, which can only handle associated command buffers.
-    `CommandQueue<B, C>` has the capability defined by `C`: graphics, compute and transfer.
-!*/
+//! Command queues.
+//!
+//! Queues are the execution paths of the graphical processing units. These process
+//! submitted commands buffers.
+//!
+//! There are different types of queues, which can only handle associated command buffers.
+//! `CommandQueue<B, C>` has the capability defined by `C`: graphics, compute and transfer.
 
 pub mod capability;
 pub mod family;
@@ -27,17 +26,17 @@ pub use self::family::{
 pub use self::submission::{RawSubmission, Submission};
 
 
-///
+/// The type of the queue, an enum encompassing `queue::Capability`
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum QueueType {
-    ///
+    /// Supports all operations.
     General,
-    ///
+    /// Only supports graphics and transfer operations.
     Graphics,
-    ///
+    /// Only supports compute and transfer operations.
     Compute,
-    ///
+    /// Only supports transfer operations.
     Transfer,
 }
 
@@ -55,7 +54,7 @@ pub trait RawCommandQueue<B: Backend> {
         IC: IntoIterator,
         IC::Item: Borrow<B::CommandBuffer>;
 
-    ///
+    /// DOC TODO
     fn present<IS, IW>(&mut self, swapchains: IS, wait_semaphores: IW)
     where
         IS: IntoIterator,
@@ -81,7 +80,7 @@ impl<B: Backend, C> CommandQueue<B, C> {
         &mut self.0
     }
 
-    ///
+    /// DOC TODO
     pub fn submit<D>(&mut self,
         submission: Submission<B, D>,
         fence: Option<&B::Fence>,
@@ -93,7 +92,7 @@ impl<B: Backend, C> CommandQueue<B, C> {
         }
     }
 
-    ///
+    /// DOC TODO
     pub fn present<IS, IW>(&mut self, swapchains: IS, wait_semaphores: IW)
     where
         IS: IntoIterator,

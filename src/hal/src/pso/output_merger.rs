@@ -52,7 +52,7 @@ impl Default for ColorMask {
     }
 }
 
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Factor {
@@ -78,7 +78,7 @@ pub enum Factor {
 }
 
 /// Blending operation.
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum BlendOp {
@@ -120,7 +120,7 @@ impl BlendOp {
     };
 }
 
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum BlendState {
@@ -217,7 +217,7 @@ impl DepthTest {
 }
 
 /// Stencil mask operation.
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum StencilOp {
@@ -258,7 +258,7 @@ pub struct StencilFace {
     pub op_pass: StencilOp,
 }
 
-#[allow(missing_docs)]
+/// DOC TODO
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum StencilTest {

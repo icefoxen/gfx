@@ -99,7 +99,7 @@ pub trait DescriptorPool<B: Backend>: Send + Sync + fmt::Debug {
     fn reset(&mut self);
 }
 
-#[allow(missing_docs)] //TODO
+/// DOC TODO //TODO
 pub struct DescriptorSetWrite<'a, 'b, B: Backend, R: RangeArg<u64>> {
     pub set: &'a B::DescriptorSet,
     pub binding: usize,
@@ -107,7 +107,7 @@ pub struct DescriptorSetWrite<'a, 'b, B: Backend, R: RangeArg<u64>> {
     pub write: DescriptorWrite<'b, B, R>,
 }
 
-#[allow(missing_docs)] //TODO
+/// DOC TODO //TODO
 pub enum DescriptorWrite<'a, B: Backend, R: RangeArg<u64>> {
     Sampler(Vec<&'a B::Sampler>),
     SampledImage(Vec<(&'a B::ImageView, ImageLayout)>),

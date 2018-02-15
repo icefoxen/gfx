@@ -61,7 +61,7 @@ pub const BITS_ZERO: FormatBits = FormatBits {
 
 /// Source channel in a swizzle configuration. Some may redirect onto
 /// different physical channels, some may be hardcoded to 0 or 1.
-#[allow(missing_docs)]
+/// DOC TODO
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -148,7 +148,7 @@ bitflags!(
 
 /// Type of a surface channel. This is how we interpret the
 /// storage allocated with `SurfaceType`.
-#[allow(missing_docs)]
+/// DOC TODO
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -298,7 +298,7 @@ macro_rules! formats {
         $($name_tail:ident = ($surface_tail:ident, $channel_tail:ident),)*
     } => {
         ///
-        #[allow(missing_docs)]
+        /// DOC TODO
         #[repr(u32)]
         #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
         #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -324,7 +324,7 @@ macro_rules! formats {
         ];
 
         // Struct format types, for strong-typed APIs.
-            #[allow(missing_docs)]
+            /// DOC TODO
             #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
             #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
             pub struct $name;
@@ -334,7 +334,7 @@ macro_rules! formats {
             }
 
         $(
-            #[allow(missing_docs)]
+            /// DOC TODO
             #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
             #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
             pub struct $name_tail;
