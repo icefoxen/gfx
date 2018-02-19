@@ -466,13 +466,9 @@ impl SamplerInfo {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[allow(missing_docs)]
 pub struct ResourceDesc {
-    /// DOC TODO
     pub channel: format::ChannelType,
-    /// DOC TODO
     pub layer: Option<Layer>,
-    /// DOC TODO
     pub levels: Range<Level>,
-    /// DOC TODO
     pub swizzle: format::Swizzle,
 }
 
@@ -482,11 +478,8 @@ pub struct ResourceDesc {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[allow(missing_docs)]
 pub struct RenderDesc {
-    /// DOC TODO
     pub channel: format::ChannelType,
-    /// DOC TODO
     pub level: Level,
-    /// DOC TODO
     pub layer: Option<Layer>,
 }
 
@@ -509,11 +502,8 @@ bitflags!(
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct DepthStencilDesc {
-    /// DOC TODO
     pub level: Level,
-    /// DOC TODO
     pub layer: Option<Layer>,
-    /// DOC TODO
     pub flags: DepthStencilFlags,
 }
 
