@@ -1,3 +1,4 @@
+//! DOC TODO
 use std::borrow::Borrow;
 use std::ops::Range;
 
@@ -14,21 +15,27 @@ use super::{
 };
 
 
-#[allow(missing_docs)]
+/// A simple struct describing a rect with integer coordinates.
 #[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rect {
+    /// X position.
     pub x: u16,
+    /// Y position.
     pub y: u16,
+    /// Width.
     pub w: u16,
+    /// Height.
     pub h: u16,
 }
 
-#[allow(missing_docs)]
+/// A viewport, generally equating to a window on a display.
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Viewport {
+    /// The viewport boundaries.
     pub rect: Rect,
+    /// The viewport depth limits.
     pub depth: Range<f32>,
 }
 
@@ -175,8 +182,8 @@ pub struct ImageBlit {
 }
 
 impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a, B, C, S, L> {
-    ///
-    pub fn begin_render_pass_inline<T>(
+    /// DOC TODO
+    pub fn begin_renderpass_inline<T>(
         &mut self,
         render_pass: &B::RenderPass,
         frame_buffer: &B::Framebuffer,
@@ -190,7 +197,7 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
         RenderPassInlineEncoder::new(self, render_pass, frame_buffer, render_area, clear_values)
     }
 
-    /// Clear color image
+    /// Clears the image's color values with the given color.
     pub fn clear_color_image(
         &mut self,
         image: &B::Image,
@@ -201,7 +208,7 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
         self.raw.clear_color_image(image, layout, range, value)
     }
 
-    /// Clear depth-stencil image
+    /// Clear the image's depth stencil to the given value.
     pub fn clear_depth_stencil_image(
         &mut self,
         image: &B::Image,
@@ -227,7 +234,7 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
         self.raw.bind_graphics_pipeline(pipeline)
     }
 
-    ///
+    /// DOC TODO
     pub fn bind_graphics_descriptor_sets<T>(
         &mut self,
         layout: &B::PipelineLayout,
@@ -240,7 +247,7 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
         self.raw.bind_graphics_descriptor_sets(layout, first_set, sets)
     }
 
-    ///
+    /// DOC TODO
     pub fn set_viewports<T>(&mut self, viewports: T)
     where
         T: IntoIterator,
@@ -249,7 +256,7 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
         self.raw.set_viewports(viewports)
     }
 
-    ///
+    /// DOC TODO
     pub fn set_scissors<T>(&mut self, scissors: T)
     where
         T: IntoIterator,
@@ -258,17 +265,17 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
         self.raw.set_scissors(scissors)
     }
 
-    ///
+    /// DOC TODO
     pub fn set_stencil_reference(&mut self, front: StencilValue, back: StencilValue) {
         self.raw.set_stencil_reference(front, back)
     }
 
-    ///
+    /// DOC TODO
     pub fn set_blend_constants(&mut self, cv: ColorValue) {
         self.raw.set_blend_constants(cv)
     }
 
-    ///
+    /// DOC TODO
     pub fn push_graphics_constants(&mut self, layout: &B::PipelineLayout, stages: pso::ShaderStageFlags, offset: u32, constants: &[u32]) {
         self.raw.push_graphics_constants(layout, stages, offset, constants)
     }
@@ -306,8 +313,8 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot, L: Level> CommandBuffer<'a,
 }
 
 impl<'a, B: Backend, C: Supports<Graphics>, S: Shot> CommandBuffer<'a, B, C, S, Primary> {
-    ///
-    pub fn begin_render_pass_secondary<T>(
+    /// DOC TODO
+    pub fn begin_renderpass_secondary<T>(
         &mut self,
         render_pass: &B::RenderPass,
         frame_buffer: &B::Framebuffer,
@@ -323,22 +330,22 @@ impl<'a, B: Backend, C: Supports<Graphics>, S: Shot> CommandBuffer<'a, B, C, S, 
 }
 
 impl<'a, B: Backend, C: Supports<GraphicsOrCompute>, S: Shot, L: Level> CommandBuffer<'a, B, C, S, L> {
-    ///
+    /// DOC TODO
     pub fn begin_query(&mut self, query: Query<B>, flags: QueryControl) {
         self.raw.begin_query(query, flags)
     }
 
-    ///
+    /// DOC TODO
     pub fn end_query(&mut self, query: Query<B>) {
         self.raw.end_query(query)
     }
 
-    ///
+    /// DOC TODO
     pub fn reset_query_pool(&mut self, pool: &B::QueryPool, queries: Range<QueryId>) {
         self.raw.reset_query_pool(pool, queries)
     }
 
-    ///
+    /// DOC TODO
     pub fn write_timestamp(&mut self, stage: pso::PipelineStage, query: Query<B>) {
         self.raw.write_timestamp(stage, query)
     }

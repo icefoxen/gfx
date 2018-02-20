@@ -1,4 +1,5 @@
 //! Descriptor sets and layouts.
+//! DOC TODO: Define `descriptor` precisely.
 
 use std::borrow::Borrow;
 use std::fmt;
@@ -9,7 +10,7 @@ use pso::ShaderStageFlags;
 use range::RangeArg;
 
 
-///
+/// DOC TODO
 // TODO: Grasping and remembering the differences between these
 //       types is a tough task. We might be able to come up with better names?
 //       Or even use tuples to describe functionality instead of coming up with fancy names.
@@ -40,7 +41,7 @@ pub enum DescriptorType {
     // TODO: Dynamic descriptors
 }
 
-/// Binding descriptiong of a descriptor set
+/// Binding description of a descriptor set
 ///
 /// A descriptor set consists of multiple binding points.
 /// Each binding point contains one or multiple descriptors of a certain type.
@@ -72,7 +73,7 @@ pub struct DescriptorRangeDesc {
     pub count: usize,
 }
 
-///
+/// DOC TODO
 pub trait DescriptorPool<B: Backend>: Send + Sync + fmt::Debug {
     /// Allocate a descriptor set from the pool.
     ///
@@ -98,19 +99,20 @@ pub trait DescriptorPool<B: Backend>: Send + Sync + fmt::Debug {
         layouts.into_iter().map(|layout| self.allocate_set(layout.borrow())).collect()
     }
 
-    ///
+    /// DOC TODO
     fn reset(&mut self);
 }
 
-#[allow(missing_docs)] //TODO
-pub struct DescriptorSetWrite<'a, B: Backend, R: 'a + RangeArg<u64>> {
+/// DOC TODO
+#[allow(missing_docs)]
+pub struct DescriptorSetWrite<'a, 'b, B: Backend, R: RangeArg<u64>> {
     pub set: &'a B::DescriptorSet,
     pub binding: usize,
     pub array_offset: usize,
     pub write: DescriptorWrite<'a, B, R>,
 }
 
-#[allow(missing_docs)] //TODO
+#[allow(missing_docs)] //DOC ODO
 #[derive(Clone, Copy)]
 pub enum DescriptorWrite<'a, B: Backend, R: 'a + RangeArg<u64>> {
     Sampler(&'a [&'a B::Sampler]),
@@ -124,14 +126,15 @@ pub enum DescriptorWrite<'a, B: Backend, R: 'a + RangeArg<u64>> {
     CombinedImageSampler(&'a [(&'a B::Sampler, &'a B::ImageView, ImageLayout)]),
 }
 
-#[allow(missing_docs)] //TODO
-#[derive(Clone, Copy)]
-pub struct DescriptorSetCopy<'a, B: Backend> {
-    pub src_set: &'a B::DescriptorSet,
-    pub src_binding: usize,
-    pub src_array_offset: usize,
-    pub dst_set: &'a B::DescriptorSet,
-    pub dst_binding: usize,
-    pub dst_array_offset: usize,
-    pub count: usize,
+/// DOC TODO
+#[allow(missing_docs)]
+pub enum DescriptorWrite<'a, B: Backend, R: RangeArg<u64>> {
+    Sampler(Vec<&'a B::Sampler>),
+    SampledImage(Vec<(&'a B::ImageView, ImageLayout)>),
+    StorageImage(Vec<(&'a B::ImageView, ImageLayout)>),
+    InputAttachment(Vec<(&'a B::ImageView, ImageLayout)>),
+    UniformBuffer(Vec<(&'a B::Buffer, R)>),
+    StorageBuffer(Vec<(&'a B::Buffer, R)>),
+    UniformTexelBuffer(Vec<&'a B::BufferView>),
+    StorageTexelBuffer(Vec<&'a B::BufferView>),
 }
