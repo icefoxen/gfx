@@ -50,20 +50,24 @@ pub union ClearValueRaw {
 }
 
 bitflags! {
-    /// DOC TODO
+    /// Option flags for various command buffer settings.
     #[derive(Default)]
     pub struct CommandBufferFlags: u16 {
         // TODO: Remove once 'const fn' is stabilized: https://github.com/rust-lang/rust/issues/24111
-        ///
+        /// No flags.
         const EMPTY = 0x0;
 
-        ///
+        /// Says that the command buffer will be recorded, submitted only once, and then reset and re-filled 
+        /// for another submission.
         const ONE_TIME_SUBMIT = 0x1;
 
-        ///
+        /// If set on a secondary command buffer, it says the command buffer takes place entirely inside
+        /// a render pass.  Ignored on primary command buffer.
         const RENDER_PASS_CONTINUE = 0x2;
 
-        ///
+        // TODO: I feel like this could be better.
+        /// Says that a command buffer can be recorded into multiple primary command buffers,
+        /// and submitted to a queue while it is still pending.
         const SIMULTANEOUS_USE = 0x4;
     }
 }
@@ -71,29 +75,30 @@ bitflags! {
 /// An enum that indicates at runtime whether a command buffer
 /// is primary or secondary, similar to what `command::Primary`
 /// and `command::Secondary` do at compile-time.
-/// 
-/// DOC TODO: Is this correct?
+#[allow(missing_docs)]
 #[derive(Clone, Copy)]
 pub enum Level {
-    ///
     Primary,
-    ///
     Secondary,
 }
 
 /// A trait that describes all the operations that must be
 /// provided by a `Backend`'s command buffer.
 pub trait RawCommandBuffer<B: Backend>: Clone + Send {
-    /// DOC TODO
+    /// Begins recording commands to a command buffer.
     fn begin(&mut self, flags: CommandBufferFlags);
 
-    /// DOC TODO
+    /// Finish recording commands to a command buffer.
     fn finish(&mut self);
 
-    /// DOC TODO
+    /// Empties the command buffer, optionally releasing all
+    /// resources from the commands that have been submitted.
     fn reset(&mut self, release_resources: bool);
 
-    /// DOC TODO
+    // TODO: This REALLY needs to be deeper, but it's complicated.
+    // Should probably be a whole book chapter on synchronization and stuff really.
+    /// Inserts a synchronization dependency between pipeline stages
+    /// in the command buffer.
     fn pipeline_barrier<'a, T>(
         &mut self,
         stages: Range<pso::PipelineStage>,
@@ -102,7 +107,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<Barrier<'a, B>>;
 
-    /// DOC TODO
+    /// Fill a buffer with the given `u32` value.
     fn fill_buffer(
         &mut self,
         buffer: &B::Buffer,
@@ -110,7 +115,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         data: u32,
     );
 
-    /// DOC TODO
+    /// Copy data from the given slice into a buffer.
     fn update_buffer(
         &mut self,
         buffer: &B::Buffer,
@@ -118,7 +123,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         data: &[u8],
     );
 
-    /// Clear color image
+    /// Clears an image to the given color.
+    // Just calls `clear_color_raw` with some minor type conversion.
     fn clear_color_image(
         &mut self,
         image: &B::Image,
@@ -134,7 +140,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         )
     }
 
-    /// Clear color image
+    /// Clears an image to the given color.
     fn clear_color_image_raw(
         &mut self,
         &B::Image,
@@ -143,7 +149,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         ClearColorRaw,
     );
 
-    /// Clear depth-stencil image
+    /// Clear a depth-stencil image to the given value.
+    /// Just calls `clear_depth_stencil_image_raw` with some minor type conversion.
     fn clear_depth_stencil_image(
         &mut self,
         image: &B::Image,
@@ -158,7 +165,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         self.clear_depth_stencil_image_raw(image, layout, range, cv)
     }
 
-    /// Clear depth-stencil image
+    /// Clear a depth-stencil image to the given value.
     fn clear_depth_stencil_image_raw(
         &mut self,
         &B::Image,
@@ -167,7 +174,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         ClearDepthStencilRaw,
     );
 
-    /// DOC TODO
+    /// Takes an iterator of attachments and an iterator of rect's,
+    /// and clears the given rect's for *each* attachment.
     fn clear_attachments<T, U>(&mut self, clears: T, rects: U)
     where
         T: IntoIterator,
@@ -175,7 +183,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         U: IntoIterator,
         U::Item: Borrow<Rect>;
 
-    /// DOC TODO
+    /// "Resolves" a multi-sampled image, converting it into a non-multi-sampled
+    /// image.  Takes an iterator of regions to apply the resolution to.
     fn resolve_image<T>(
         &mut self,
         src: &B::Image,
@@ -187,7 +196,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<ImageResolve>;
 
-    ///
+    /// Copies regions from the source to destination image,
+    /// applying scaling, filtering and potentially format conversion.
     fn blit_image<T>(
         &mut self,
         src: &B::Image,
@@ -200,10 +210,12 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<ImageBlit>;
 
-    /// Bind index buffer view.
+    /// Bind the index buffer view, making it the "current" one that draw commands
+    /// will operate on.
     fn bind_index_buffer(&mut self, IndexBufferView<B>);
 
-    /// Bind vertex buffers.
+    /// Bind the vertex buffer set, making it the "current" one that draw commands
+    /// will operate on.
     fn bind_vertex_buffers(&mut self, pso::VertexBufferSet<B>);
 
     /// Set the viewport parameters for the rasterizer.
@@ -250,13 +262,13 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<Rect>;
 
-    /// DOC TODO
+    /// DOC TODO: I don't know how to explain this.
     fn set_stencil_reference(&mut self, front: StencilValue, back: StencilValue);
 
-    /// DOC TODO
+    /// Set the blend constant values dynamically.
     fn set_blend_constants(&mut self, ColorValue);
 
-    /// DOC TODO
+    /// Just does some type conversions and calls `begin_renderpass_raw`.
     fn begin_renderpass<T>(
         &mut self,
         render_pass: &B::RenderPass,
@@ -292,7 +304,12 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         )
     }
 
-    /// DOC TODO
+    /// Begins recording commands for a render pass on the given framebuffer.
+    /// `render_area` is the section of the framebuffer to render,
+    /// `clear_values` is an iterator of `ClearValue`'s to use to use for
+    /// `clear_*` commands, one for each attachment of the render pass.
+    /// `first_subpass` specifies whether the rendering commands are provided
+    /// inline, or whether the render pass is composed of subpasses.
     fn begin_renderpass_raw<T>(
         &mut self,
         render_pass: &B::RenderPass,
@@ -304,10 +321,10 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<ClearValueRaw>;
 
-    /// DOC TODO
+    /// Steps to the next subpass in the current render pass.
     fn next_subpass(&mut self, contents: SubpassContents);
 
-    /// DOC TODO
+    /// Finishes recording commands for the current a render pass.
     fn end_renderpass(&mut self);
 
     /// Bind a graphics pipeline.
@@ -321,7 +338,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
     /// - Only queues with graphics capability support this function.
     fn bind_graphics_pipeline(&mut self, &B::GraphicsPipeline);
 
-    /// DOC TODO
+    /// Takes an iterator of graphics `DescriptorSet`'s, and binds them to the command buffer.
+    /// `first_set` is the index that the first descriptor is mapped to in the command buffer.
     fn bind_graphics_descriptor_sets<T>(
         &mut self,
         layout: &B::PipelineLayout,
@@ -342,7 +360,8 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
     /// - Only queues with compute capability support this function.
     fn bind_compute_pipeline(&mut self, &B::ComputePipeline);
 
-    /// DOC TODO
+    /// Takes an iterator of compute `DescriptorSet`'s, and binds them to the command buffer,
+    /// `first_set` is the index that the first descriptor is mapped to in the command buffer.
     fn bind_compute_descriptor_sets<T>(
         &mut self,
         layout: &B::PipelineLayout,
@@ -352,7 +371,9 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<B::DescriptorSet>;
 
-    /// Execute a workgroup in the compute pipeline.
+    /// Execute a workgroup in the compute pipeline.  `x`, `y` and `z` are the
+    /// number of local workgroups to dispatch along each "axis"; a total of `x`*`y`*`z`
+    /// local workgroups will be created.
     ///
     /// # Errors
     ///
@@ -368,10 +389,11 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
     /// TODO:
     fn dispatch(&mut self, x: u32, y: u32, z: u32);
 
-    /// DOC TODO
+    /// Works similarly to `dispatch()` but reads parameters from the given
+    /// buffer during execution.
     fn dispatch_indirect(&mut self, buffer: &B::Buffer, offset: u64);
 
-    /// DOC TODO
+    /// Adds a command to copy regions from the source to destination buffer.
     fn copy_buffer<T>(
         &mut self,
         src: &B::Buffer,
@@ -381,7 +403,10 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<BufferCopy>;
 
-    /// DOC TODO
+    /// Copies regions from the source to the destination images, which
+    /// have the given layouts.  No format conversion is done; the source and destination
+    /// `ImageLayout`'s **must** have the same sized texels (such as `Rgba8Unorm` and `R32`,
+    /// both of which are 32 bits).
     fn copy_image<T>(
         &mut self,
         src: &B::Image,
@@ -393,7 +418,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<ImageCopy>;
 
-    /// DOC TODO
+    /// Copies regions from the source buffer to the destination image.
     fn copy_buffer_to_image<T>(
         &mut self,
         src: &B::Buffer,
@@ -404,7 +429,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<BufferImageCopy>;
 
-    /// DOC TODO
+    /// Copies regions from the source image to the destination buffer.
     fn copy_image_to_buffer<T>(
         &mut self,
         src: &B::Image,
@@ -415,14 +440,22 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         T: IntoIterator,
         T::Item: Borrow<BufferImageCopy>;
 
-    /// DOC TODO
+    // TODO: This explanation needs improvement.
+    /// Performs a non-indexed drawing operation, drawing the given range
+    /// of vertices from the current vertex buffer.  It performs instanced 
+    /// drawing, drawing `instances.len()`
+    /// times with an `instanceIndex` starting with the start of the range.
     fn draw(
         &mut self,
         vertices: Range<VertexCount>,
         instances: Range<InstanceCount>,
     );
 
-    /// DOC TODO
+    /// Performs indexed drawing, drawing the given range of indices 
+    /// from the current vertex and index buffers.  `base_vertex` specifies
+    /// the vertex corresponding to index 0.
+    ///
+    /// It also performs instanced drawing, identical to `draw()`.
     fn draw_indexed(
         &mut self,
         indices: Range<IndexCount>,
@@ -430,7 +463,15 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         instances: Range<InstanceCount>,
     );
 
-    /// DOC TODO
+    /// Functions identically to `draw()`, except the parameters are read
+    /// from the given buffer, starting at `offset` and increasing `stride`
+    /// bytes with each successive draw.  Performs `draw_count` draws total.
+    /// `draw_count` may be zero.
+    ///
+    /// Each draw command in the buffer is a series of 4 `u32` values specifying,
+    /// in order, the number of vertices to draw, the number of instances to draw,
+    /// the index of the first vertex to draw, and the instance ID of the first
+    /// instance to draw.
     fn draw_indirect(
         &mut self,
         buffer: &B::Buffer,
@@ -439,7 +480,13 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         stride: u32,
     );
 
-    /// DOC TODO
+    /// Like `draw_indirect()`, this does indexed drawing a la `draw_indexed()` but
+    /// reads the draw parameters out of the given buffer.
+    ///
+    /// Each draw command in the buffer is a series of 5 values specifying,
+    /// in order, the number of indices, the number of instances, the first index,
+    /// the vertex offset, and the first instance.  All are `u32`'s except 
+    /// the vertex offset, which is an `i32`.
     fn draw_indexed_indirect(
         &mut self,
         buffer: &B::Buffer,
@@ -448,19 +495,23 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         stride: u32,
     );
 
-    /// DOC TODO
+    /// Begins a query operation.  Queries count operations or record timestamps
+    /// resulting from commands that occur between the beginning and end of the query,
+    /// and save the results to the query pool.
     fn begin_query(&mut self, query: Query<B>, flags: QueryControl);
 
-    /// DOC TODO
+    /// End a query.
     fn end_query(&mut self, query: Query<B>);
 
-    /// DOC TODO
+    /// Reset/clear the values in the given range of the query pool.
     fn reset_query_pool(&mut self, pool: &B::QueryPool, queries: Range<QueryId>);
 
-    /// DOC TODO
+    /// Requests a timestamp to be written.
     fn write_timestamp(&mut self, pso::PipelineStage, Query<B>);
 
-    /// DOC TODO
+    /// Modify constant data in a graphics pipeline.
+    /// Push constants are intended to modify data in a pipeline more
+    /// quickly than a memory copy.
     fn push_graphics_constants(
         &mut self,
         layout: &B::PipelineLayout,
@@ -469,7 +520,9 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         constants: &[u32],
     );
 
-    /// DOC TODO
+    /// Modify constant data in a compute pipeline.
+    /// Push constants are intended to modify data in a pipeline more
+    /// quickly than a memory copy.
     fn push_compute_constants(
         &mut self,
         layout: &B::PipelineLayout,
@@ -477,7 +530,7 @@ pub trait RawCommandBuffer<B: Backend>: Clone + Send {
         constants: &[u32],
     );
 
-    /// DOC TODO
+    /// Execute the given secondary command buffers.
     fn execute_commands<I>(
         &mut self,
         buffers: I,
