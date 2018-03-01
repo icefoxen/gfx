@@ -1,5 +1,9 @@
 //! Descriptor sets and layouts.
-//! DOC TODO: Define `descriptor` precisely.
+//! A descriptor is an object that describes the connection between a resource, such as
+//! an `Image` or `Buffer`, and a variable in a shader.  Descriptors are organized into
+//! sets, each of which contains multiple descriptors that are bound and unbound to
+//! shaders as a single unit.  Each descriptor set may contain descriptors to multiple 
+//! different sorts of resources, and a shader may use multiple descriptor sets at a time.
 
 use std::borrow::Borrow;
 use std::fmt;
@@ -10,8 +14,7 @@ use pso::ShaderStageFlags;
 use range::RangeArg;
 
 
-/// DOC TODO
-// TODO: Grasping and remembering the differences between these
+// DOC TODO: Grasping and remembering the differences between these
 //       types is a tough task. We might be able to come up with better names?
 //       Or even use tuples to describe functionality instead of coming up with fancy names.
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -73,7 +76,8 @@ pub struct DescriptorRangeDesc {
     pub count: usize,
 }
 
-/// DOC TODO
+
+/// A descriptor pool is a collection of memory from which descriptor sets are allocated.
 pub trait DescriptorPool<B: Backend>: Send + Sync + fmt::Debug {
     /// Allocate a descriptor set from the pool.
     ///
@@ -99,7 +103,10 @@ pub trait DescriptorPool<B: Backend>: Send + Sync + fmt::Debug {
         layouts.into_iter().map(|layout| self.allocate_set(layout.borrow())).collect()
     }
 
-    /// DOC TODO
+    /// Resets a descriptor pool, releasing all resources from all the descriptor sets
+    /// allocated from it and freeing the descriptor sets.  Invalidates all descriptor
+    /// sets allocated from the pool; trying to use one after the pool has been reset
+    /// is undefined behavior.
     fn reset(&mut self);
 }
 
@@ -112,7 +119,8 @@ pub struct DescriptorSetWrite<'a, 'b, B: Backend, R: RangeArg<u64>> {
     pub write: DescriptorWrite<'a, B, R>,
 }
 
-#[allow(missing_docs)] //DOC ODO
+/// DOC TODO
+#[allow(missing_docs)]
 #[derive(Clone, Copy)]
 pub enum DescriptorWrite<'a, B: Backend, R: 'a + RangeArg<u64>> {
     Sampler(&'a [&'a B::Sampler]),
@@ -124,17 +132,4 @@ pub enum DescriptorWrite<'a, B: Backend, R: 'a + RangeArg<u64>> {
     UniformTexelBuffer(&'a [&'a B::BufferView]),
     StorageTexelBuffer(&'a [&'a B::BufferView]),
     CombinedImageSampler(&'a [(&'a B::Sampler, &'a B::ImageView, ImageLayout)]),
-}
-
-/// DOC TODO
-#[allow(missing_docs)]
-pub enum DescriptorWrite<'a, B: Backend, R: RangeArg<u64>> {
-    Sampler(Vec<&'a B::Sampler>),
-    SampledImage(Vec<(&'a B::ImageView, ImageLayout)>),
-    StorageImage(Vec<(&'a B::ImageView, ImageLayout)>),
-    InputAttachment(Vec<(&'a B::ImageView, ImageLayout)>),
-    UniformBuffer(Vec<(&'a B::Buffer, R)>),
-    StorageBuffer(Vec<(&'a B::Buffer, R)>),
-    UniformTexelBuffer(Vec<&'a B::BufferView>),
-    StorageTexelBuffer(Vec<&'a B::BufferView>),
 }

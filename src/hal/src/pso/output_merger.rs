@@ -1,4 +1,6 @@
 //! Output Merger (OM) stage description.
+//! The final stage in a pipeline that creates pixel colors from
+//! the input shader results, depth/stencil information, etc.
 
 use command::StencilValue;
 
@@ -52,7 +54,9 @@ impl Default for ColorMask {
     }
 }
 
-// DOC TODO
+/// Defines the possible blending factors.
+/// During blending, the source or destination fragment may be
+/// multiplied by a factor to produce the final result.
 #[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -78,8 +82,7 @@ pub enum Factor {
     OneMinusSrc1Alpha,
 }
 
-/// Blending operation.
-/// DOC TODO
+/// Blending operations.
 #[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -206,25 +209,27 @@ impl Default for DepthTest {
 }
 
 impl DepthTest {
-    /// DOC TODO
+    /// A depth test that always fails.
     pub const FAIL: Self = DepthTest::On {
         fun: Comparison::Never,
         write: false,
     };
-    /// DOC TODO
+    /// A depth test that always succeeds but doesn't
+    /// write to the depth buffer
+    // DOC TODO: Not a terribly helpful description there...
     pub const PASS_TEST: Self = DepthTest::On {
         fun: Comparison::Always,
         write: false,
     };
-    /// DOC TODO
+    /// A depth test that always succeeds and writes its result
+    /// to the depth buffer.
     pub const PASS_WRITE: Self = DepthTest::On {
         fun: Comparison::Always,
         write: true,
     };
 }
 
-/// Stencil mask operation.
-/// DOC TODO
+/// The operation to use for stencil masking.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum StencilOp {
@@ -265,7 +270,11 @@ pub struct StencilFace {
     pub op_pass: StencilOp,
 }
 
-/// DOC TODO
+/// Defines a stencil test.  Stencil testing is an operation
+/// performed after a fragment is created by a fragment shader;
+/// the new fragment is tested against the value held in the
+/// stencil buffer, and if the test fails the fragment is
+/// discarded.
 #[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

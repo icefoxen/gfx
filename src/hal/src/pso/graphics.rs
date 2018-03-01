@@ -15,8 +15,6 @@ use super::output_merger::{ColorBlendDesc, DepthStencilDesc};
 /// outputs are considered to have undefined values, and the 
 /// fragment depth is considered to be unmodified. This can 
 /// be useful for depth-only rendering.
-
-
 #[derive(Clone, Debug)]
 pub struct GraphicsShaderSet<'a, B: Backend> {
     /// A shader that outputs a vertex in a model.
@@ -38,7 +36,8 @@ pub struct GraphicsShaderSet<'a, B: Backend> {
     pub fragment: Option<EntryPoint<'a, B>>,
 }
 
-/// DOC TODO
+/// A description of all the settings that can be altered
+/// when creating a graphics pipeline.
 #[derive(Debug)]
 pub struct GraphicsPipelineDesc<'a, B: Backend> {
     /// A set of graphics shaders to use for the pipeline.
@@ -49,9 +48,10 @@ pub struct GraphicsPipelineDesc<'a, B: Backend> {
     pub vertex_buffers: Vec<VertexBufferDesc>,
     /// Vertex attributes (IA)
     pub attributes: Vec<AttributeDesc>,
-    ///DOC TODO
+    /// Input assembler attributes, describes how
+    /// vertices are assembled into triangles.
     pub input_assembler: InputAssemblerDesc,
-    /// DOC TODO
+    /// Description of how blend operations should be performed.
     pub blender: BlendDesc,
     /// Depth stencil (DSV)
     pub depth_stencil: Option<DepthStencilDesc>,
@@ -59,9 +59,10 @@ pub struct GraphicsPipelineDesc<'a, B: Backend> {
     pub layout: &'a B::PipelineLayout,
     /// Subpass in which the pipeline can be executed.
     pub subpass: pass::Subpass<'a, B>,
-    /// DOC TODO
+    /// Options that may be set to alter pipeline properties.
     pub flags: PipelineCreationFlags,
-    /// DOC TODO
+    /// The parent pipeline, which may be
+    /// `BasePipeline::None`.
     pub parent: BasePipeline<'a, B::GraphicsPipeline>,
 }
 
@@ -130,16 +131,19 @@ pub enum FrontFace {
 
 /// A depth bias allows changing the produced depth values 
 /// for fragments slightly but consistently.  This permits 
-/// drawing of multiple layers of the same geometry without 
+/// drawing of multiple polygons in the same plane without 
 /// Z-fighting, such as when trying to draw shadows on a wall.
+///
+/// For details of the algorithm and equations, see
+/// [the Vulkan spec](https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#primsrast-depthbias).
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct DepthBias {
-    /// DOC TODO
+    /// A constant depth value added to each fragment.
     pub const_factor: f32,
-    /// DOC TODO
+    /// The minimum or maximum depth bias of a fragment.
     pub clamp: f32,
-    /// DOC TODO
+    /// A constant bias applied to the fragment's slope.
     pub slope_factor: f32,
 }
 
@@ -153,11 +157,13 @@ pub struct Rasterizer {
     pub cull_face: Option<CullFace>,
     /// Which vertex winding is considered to be the front face for culling.
     pub front_face: FrontFace,
-    /// DOC TODO
+    /// Whether or not to enable depth clamping; when enabled, instead of
+    /// fragments being omitted when they are outside the bounds of the z-plane,
+    /// they will be clamped to the min or max z value.
     pub depth_clamping: bool,
     /// What depth bias, if any, to use for the drawn primitives.
     pub depth_bias: Option<DepthBias>,
-    /// DOC TODO
+    /// DOC TODO: Not sure what this is intended for, seems unused.
     pub conservative: bool,
     //TODO: multisampling
 }
@@ -178,48 +184,34 @@ impl Rasterizer {
 #[derive(Clone, Debug, Default, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct BlendDesc {
-    /// DOC TODO
+    /// DOC TODO: ???
+    /// Is this for this feature: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205072(v=vs.85).aspx#Alpha_To_Coverage ?
     pub alpha_coverage: bool,
-    /// DOC TODO
+    /// The logi operation to apply to the blending equation, if any.
     pub logic_op: Option<LogicOp>,
-    /// DOC TODO
+    /// Which color targets to apply the blending operation to.
     pub targets: Vec<ColorBlendDesc>,
 }
 
 /// Logic operations used for specifying blend equations.
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[allow(missing_docs)]
 pub enum LogicOp {
-    /// DOC TODO alllll of these, with examples.
     Clear,
-    ///
     And,
-    ///
     AndReverse,
-    ///
     AndInverted,
-    ///
     Copy,
-    ///
     CopyInverted,
-    ///
     NoOp,
-    ///
     Xor,
-    ///
     Nor,
-    ///
     Or,
-    ///
     OrReverse,
-    ///
     OrInverted,
-    ///
     Equivalent,
-    ///
     Invert,
-    ///
     Nand,
-    ///
     Set,
 }
